@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+require_relative "../lib/snowsafe"
+
+def cli_prompt(obj, nest_level, *)
+  if nest_level.zero?
+    ">>> "
+  else
+    "#{obj}:#{nest_level}> "
+  end
+end
+
+Pry.config.prompt = method :cli_prompt
+Pry.start(Snowsafe)
