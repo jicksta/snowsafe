@@ -10,4 +10,4 @@ def cli_prompt(obj, nest_level, *)
 end
 
 Pry.config.prompt = method :cli_prompt
-Pry.start(Snowsafe)
+Pry.start Snowsafe

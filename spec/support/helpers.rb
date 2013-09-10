@@ -1,7 +1,7 @@
 module TestHelpers
 
   def new_password
-    "password"
+    SecureRandom.hex
   end
 
   def clear_fixtures!

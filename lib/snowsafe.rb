@@ -10,6 +10,7 @@ Bundler.require
 require_relative "snowsafe/version"
 require_relative "snowsafe/cipher"
 require_relative "snowsafe/index"
+require_relative "snowsafe/entry"
 
 module Snowsafe
 end

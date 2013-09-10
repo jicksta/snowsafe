@@ -20,7 +20,10 @@ This library is founded on the following cryptographic design goals:
 * Alternative implementations should be easy to build
 * Command-line interface for encryption and decryption
 * User-specific extensions to the database be allowed everywhere
+* Support for arbitrarily-nested safes
 
+When I feel the design is settling, I'll explain in detail how the encryption
+works so that everyone can understand the value of this utility.
 
 License
 -------

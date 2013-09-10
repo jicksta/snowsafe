@@ -1,41 +1,50 @@
 module Snowsafe
 
+  ##
+  # This module should centralize all critical cryptographic logic for ease of auditing.
+  #
   module Cipher
 
     MODE = 'AES-256-CBC'
 
-    def self.encrypt(cleartext, password)
-      aes = cipher.encrypt
-      aes.key = sha256 password
-      iv = aes.random_iv
+    def self.encrypt(cleartext, password: nil, iv: nil)
+      aes = new_cipher.encrypt
+
+      key = aes.key = (password ? password : random_key)
+      iv = aes.iv = (iv ? iv : random_iv)
+
       ciphertext = aes.update(cleartext) + aes.final
-      encoded_ciphertext = encode64 ciphertext
-      EncryptedMessage.new(encoded_ciphertext, iv)
+
+      EncryptedMessage.new(ciphertext, key, iv)
     end
 
-    def self.decrypt(ciphertext, password, iv)
+    def self.decrypt(ciphertext, password, iv: nil)
       decoded_ciphertext = decode64 ciphertext
 
-      aes = cipher.decrypt
-      aes.key = sha256 password
-      aes.iv = iv
+      aes = new_cipher.decrypt
+      aes.key = password
+      aes.iv = iv if iv
       aes.update(decoded_ciphertext) + aes.final
     end
 
-    def self.cipher
-      OpenSSL::Cipher::Cipher.new(MODE)
+    def self.new_cipher
+      OpenSSL::Cipher.new(MODE)
     end
 
-    def self.iv
-      cipher.random_iv
+    def self.random_key
+      encode64 new_cipher.random_key
     end
 
-    def self.sha256(cleartext)
-      Digest::SHA2.new(256).digest(cleartext)
+    def self.random_iv
+      encode64 new_cipher.random_iv
     end
 
     def self.toml_encode(data)
       TOML::Generator.new(data).body
+    end
+
+    def self.toml_decode(data)
+      TOML::Parser.new(data).parsed
     end
 
     def self.encode64(message)
@@ -46,19 +55,22 @@ module Snowsafe
       Base64.decode64 message
     end
 
+    def self.uuid
+      SecureRandom.uuid
+    end
 
     class EncryptedMessage
-      attr_reader :ciphertext, :iv
-      def initialize(ciphertext, iv)
-        @ciphertext, @iv = ciphertext, iv
+      attr_reader :ciphertext, :key, :iv
+
+      def initialize(ciphertext, key, iv)
+        @ciphertext, @key, @iv = ciphertext, key, iv
       end
 
-      def iv_base64
-        Cipher.encode64 @iv
+      def ciphertext_base64
+        @ciphertext_base64 ||= Cipher.encode64 @ciphertext
       end
 
     end
-
   end
 
 end

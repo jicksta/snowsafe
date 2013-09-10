@@ -4,28 +4,29 @@ module Snowsafe
   describe Cipher do
 
     let(:message) { "Fuck the NSA!" }
-    let(:key) { rand.to_s }
+    let(:key) { SecureRandom.hex }
 
     it "can decrypt what it encrypts" do
-      encrypted = Cipher.encrypt(message, key)
-      decrypted = Cipher.decrypt(encrypted.ciphertext, key, encrypted.iv)
+      encrypted = Cipher.encrypt(message, password: key)
+      decrypted = Cipher.decrypt(encrypted.ciphertext_base64, key, iv: encrypted.iv)
       decrypted.should == message
+    end
+
+    describe "TOML encoding" do
+      it "encodes and decodes" do
+        data = {"one" => 1, "two" => "2", "three" => {"german" => "drei", "spanish" => "tres"}}
+        encoded = Cipher.toml_encode(data)
+        Cipher.toml_decode(encoded).should == data
+      end
     end
 
     describe Cipher::EncryptedMessage do
 
-      it "exposes getters for its ciphertext and iv" do
-        message = Cipher::EncryptedMessage.new("ciphertext", "iv")
+      it "exposes getters for its ciphertext, key and iv" do
+        message = Cipher::EncryptedMessage.new("ciphertext", "key", "iv")
         message.ciphertext.should == "ciphertext"
+        message.key.should == "key"
         message.iv.should == "iv"
-      end
-
-      describe "#iv_base64" do
-        it "returns the Base64 encoded text of the IV" do
-          iv = "0123456789ABCDEF"
-          message = Cipher::EncryptedMessage.new("ciphertext", iv)
-          message.iv_base64.should == Cipher.encode64(iv)
-        end
       end
 
     end
