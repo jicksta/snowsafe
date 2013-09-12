@@ -15,12 +15,10 @@ module Snowsafe
 
     def self.write_index(file_or_path, data)
       toml_content = Cipher.toml_encode data
-      writer = -> file { file.write toml_content }
       if file_or_path.kind_of?(File)
-        writer.call(file_or_path)
+        file_or_path.write toml_content
       else
-        FileUtils.touch file_or_path
-        File.open(file_or_path, 'r+', &writer)
+        File.open(file_or_path, 'w') { |f| f.write toml_content }
       end
     end
 
@@ -28,7 +26,7 @@ module Snowsafe
       {
           version: Snowsafe::VERSION,
           created_at: Time.now.to_i,
-          iv: SecureRandom.hex,
+          iv: SecureRandom.urlsafe_base64,
           entries: {},
           # hidden_files: false, # Looks for files with the name .8dec1b9f-3263-4a84-bbe2-51ef6ff1dba1
           # update_timestamp: true, # If set to false, no timestamps will be written
