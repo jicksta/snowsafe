@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snowsafe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="./vendor/bootstrap/css/bootstrap.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="./vendor/bootstrap/css/bootstrap-theme.css" media="screen" rel="stylesheet" type="text/css"/>
+
+  <style>
+    div#wall {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      margin-left: -150px;
+    }
+
+    div#main {
+      display: none;
+      padding-top: 100px;
+      /*max-width: 330px;*/
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    pre {
+      font-size: 10px;
+    }
+    input#master {
+      font-size: 30px;
+      width: 300px;
+      height: 50px;
+    }
+
+  </style>
+
+  <script type="text/javascript" src="vendor/jquery-1.10.2.js"></script>
+  <script type="text/javascript" src="vendor/underscore.js"></script>
+  <script type="text/javascript" src="vendor/toml.js"></script>
+
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-utf16-min.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+
+  <script id="entry" type="text/x-toml">
+loFsPv6qvqPsBgHffkI1vFH/UyS4WGayVOWm7hGVX9rDNDPr7zwvVhA+Re/b
+c6ZrvUPwlQJBw26a4+olXICGvQ==
+  </script>
+
+  <script id="index-toml" type="text/x-toml">
+created_at = 1379177708
+iv = "oDovga1l5YQ0qQPlxVx-vw"
+version = "0.1.0"
+
+[entries]
+6b1a29d8-2594-47e1-9d2e-b6e07b16631f = "NyAIGv06c9XUKy3ph0+iOPqJW8TnLlECUSph+WxCZI+wL+IU3Ec0Me6D7Gee\nGecM"
+  </script>
+
+</head>
+<body>
+
+<div class="container">
+  <div id="wall" class="form-inline">
+    <input autofocus id="master" type="password" class="form-control" placeholder="Unlock"/>
+  </div>
+
+  <div id="main">
+
+    <pre id="show-index-toml"></pre>
+    <pre id="show-index-json"></pre>
+
+    <form role="form">
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" class="form-control" placeholder="Enter email">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-control" placeholder="Password">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputFile">File input</label>
+        <input type="file" id="exampleInputFile">
+
+        <p class="help-block">Example block-level help text here.</p>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> Check me out
+        </label>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var main = document.getElementById("wall");
+  main.style.marginTop = -(main.clientHeight / 2);
+</script>
+
+</body>
+</html>

@@ -4,12 +4,20 @@ module Snowsafe
   describe Cipher do
 
     let(:message) { "Fuck the NSA!" }
-    let(:key) { SecureRandom.hex }
+    let(:key) { "password" }
 
     it "can decrypt what it encrypts" do
       encrypted = Cipher.encrypt(message, password: key)
       decrypted = Cipher.decrypt(encrypted.ciphertext_base64, key, iv: encrypted.iv)
       decrypted.should == message
+    end
+
+    it "can encrypt messages with short passwords" do
+      expect do
+        %w[a ab abc abcd].each do |password|
+          Cipher.encrypt(message, password: password)
+        end
+      end.not_to raise_error
     end
 
     describe "TOML encoding" do

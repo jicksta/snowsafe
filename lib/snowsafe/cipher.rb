@@ -7,28 +7,34 @@ module Snowsafe
 
     MODE = 'AES-256-CBC'
 
-    def self.encrypt(cleartext, password: nil, iv: nil)
+    def self.encrypt(cleartext, password: random_key, iv: random_iv)
       aes = new_cipher.encrypt
 
-      key = aes.key = (password ? password : random_key)
-      iv = aes.iv = (iv ? iv : random_iv)
+      key_digest = sha256 password
+
+      aes.key = key_digest
+      aes.iv = iv
 
       ciphertext = aes.update(cleartext) + aes.final
 
-      EncryptedMessage.new(ciphertext, key, iv)
+      EncryptedMessage.new(ciphertext, password, iv)
     end
 
     def self.decrypt(ciphertext, password, iv: nil)
       decoded_ciphertext = decode64 ciphertext
 
       aes = new_cipher.decrypt
-      aes.key = password
+      aes.key = sha256 password
       aes.iv = iv if iv
       aes.update(decoded_ciphertext) + aes.final
     end
 
     def self.new_cipher
       OpenSSL::Cipher.new(MODE)
+    end
+
+    def self.sha256(str)
+      Digest::SHA256.new.digest(str)
     end
 
     def self.random_key
